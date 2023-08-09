@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "invoice" ADD COLUMN     "invoice_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;

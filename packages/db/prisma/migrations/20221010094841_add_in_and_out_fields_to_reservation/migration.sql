@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "reservation" ADD COLUMN     "in" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "out" INTEGER NOT NULL DEFAULT 0;

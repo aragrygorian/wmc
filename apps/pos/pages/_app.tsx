@@ -1,0 +1,89 @@
+import { userModule } from '@admin/modules/User/userConfig'
+import type { EmotionCache } from '@emotion/cache'
+import { CacheProvider } from '@emotion/react'
+import { AuthProvider } from '@gravis-os/auth'
+import { deviasTheme } from '@gravis-os/dashboard'
+import { SettingsConsumer, SettingsProvider } from '@gravis-os/ui'
+import { PosProvider, posTheme } from '@gravis-os/apps/pos'
+import CssBaseline from '@mui/material/CssBaseline'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { appConfig } from '@pos/app/config'
+import { routes } from '@pos/app/routes'
+import { createEmotionCache } from '@pos/lib/Mui/create-emotion-cache'
+import type { NextPage } from 'next'
+import type { AppProps } from 'next/app'
+import Head from 'next/head'
+import type { FC } from 'react'
+import React from 'react'
+import { Toaster } from 'react-hot-toast'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+
+// CSS
+import 'ag-grid-community/dist/styles/ag-grid.css'
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
+import 'react-quill/dist/quill.snow.css'
+
+type EnhancedAppProps = AppProps & {
+  Component: NextPage
+  emotionCache: EmotionCache
+}
+
+// Emotion
+const clientSideEmotionCache = createEmotionCache()
+
+// React query
+const queryClient = new QueryClient()
+
+const App: FC<EnhancedAppProps> = (props) => {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <CacheProvider value={emotionCache}>
+        <AuthProvider
+          select={userModule.select.list}
+          authRoutes={{
+            authenticationSuccessRedirect: routes.AUTH_SUCCESS_REDIRECT,
+            authorizationSuccessRedirect: routes.AUTH_SUCCESS_REDIRECT,
+          }}
+        >
+          <Head>
+            <title>{appConfig.title}</title>
+            <meta
+              name="viewport"
+              content="initial-scale=1, width=device-width"
+            />
+          </Head>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <PosProvider>
+              <SettingsProvider>
+                <SettingsConsumer>
+                  {() => (
+                    <ThemeProvider
+                      theme={createTheme(
+                        deviasTheme.light,
+                        appConfig.theme,
+                        posTheme
+                      )}
+                    >
+                      <CssBaseline />
+                      <Component {...pageProps} />
+                      <Toaster position="top-right" />
+                    </ThemeProvider>
+                  )}
+                </SettingsConsumer>
+              </SettingsProvider>
+            </PosProvider>
+          </LocalizationProvider>
+        </AuthProvider>
+      </CacheProvider>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  )
+}
+
+export default App

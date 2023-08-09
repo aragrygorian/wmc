@@ -1,0 +1,16 @@
+{
+  "extends": "@gravis-os/tsconfig/nextjs.json",
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@admin/*": ["src/*"],
+      "@common/*": ["../../packages/common/*"],
+      "@driver/*": ["../driver/src/*"],
+      "@warehouse/*": ["../warehouse/src/*"],
+      "@salesperson/*": ["../salesperson/src/*"],
+      "@pos/*": ["../pos/src/*"]
+    }
+  }
+}

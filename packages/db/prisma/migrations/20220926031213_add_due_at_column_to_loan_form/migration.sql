@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "loan_form" ADD COLUMN     "due_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;
